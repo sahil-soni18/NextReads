@@ -31,7 +31,9 @@ const books = [
     id: 3,
     title: "To Kill a Mockingbird",
     author: "Harper Lee",
-    image: "https://unsplash.com/photos/black-leather-armchair-beside-brown-wooden-shelf-W3A3DUhPkVM",
+    // image: "https://unsplash.com/photos/open-book-lot-Oaqk7qqNh_c",
+    image: "https://images.unsplash.com/photo-1522092787789-95b08ec82c3d",
+
     price: "$12",
   },
 ];
