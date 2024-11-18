@@ -2,13 +2,22 @@
 import React, { useState } from "react";
 import { HoveredLink, Menu, MenuItem, ProductItem } from "./ui/navbar-menu";
 import { cn } from "@/lib/utils";
+import Image from 'next/image';
 
 export function NavbarDemo() {
   return (
     <div className="relative w-full flex items-center justify-center">
-      <Navbar className="top-2" />
+      <Image
+      className="relative mr-auto ml-6"
+      src="/images/booring-book.png"
+      width={200}
+      height={100}
+      alt="Picture of the author"
+      />
+      <Navbar className="top-5" />
+      
       <p className="text-black dark:text-white">
-        The Navbar will show on top of the page
+        
       </p>
     </div>
   );

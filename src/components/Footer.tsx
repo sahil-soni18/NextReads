@@ -1,5 +1,5 @@
 import React from "react";
-
+import Image from "next/image";
 const Footer = () => {
     return (
         <footer className="bg-black-800 text-gray-300 py-8">
@@ -8,6 +8,13 @@ const Footer = () => {
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                     {/* Column 1 */}
                     <div>
+                    <Image
+                    className="relative mr-auto ml-6"
+                    src="/images/booring-book.png"
+                    width={200}
+                    height={100}
+                    alt="Picture of the author"
+                    />
                         <h4 className="text-white font-semibold mb-4">About Us</h4>
                         <p className="text-sm">
                             We provide the best solutions for web development, design, and more. Let's work together to create something amazing!
@@ -29,13 +36,13 @@ const Footer = () => {
                         <h4 className="text-white font-semibold mb-4">Contact</h4>
                         <p className="text-sm">Email: contact@yourwebsite.com</p>
                         <p className="text-sm">Phone: +123 456 7890</p>
-                        <p className="text-sm">Location: Your City, Your Country</p>
+                        <p className="text-sm">Location: Washington DC , USA</p>
                     </div>
                 </div>
 
                 {/* Bottom Section */}
                 <div className="border-t border-gray-700 mt-6 pt-6 text-center">
-                    <p className="text-sm">&copy; 2024 Your Website. All rights reserved.</p>
+                    <p className="text-sm">&copy; 2024 Booring Books. All rights reserved.</p>
                 </div>
             </div>
         </footer>
