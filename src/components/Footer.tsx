@@ -37,6 +37,30 @@ const Footer = () => {
                         <p className="text-sm">Email: contact@yourwebsite.com</p>
                         <p className="text-sm">Phone: +123 456 7890</p>
                         <p className="text-sm">Location: Washington DC , USA</p>
+                        <div className="flex space-x-4 mt-2">
+                            <Image 
+                                className="cursor-pointer"
+                                src="/images/twitter.webp"
+                                width={25}
+                                height={25}
+                                alt="Twitter" 
+                            />
+                            <Image 
+                                className="cursor-pointer"
+                                src="/images/linkdin.webp"
+                                width={25}
+                                height={25}
+                                alt="LinkedIn" 
+                            />
+                            <Image 
+                                className="cursor-pointer"
+                                src="/images/facebook.webp"
+                                width={25}
+                                height={25}
+                                alt="Facebook" 
+                            />
+                        </div>
+
                     </div>
                 </div>
 
