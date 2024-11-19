@@ -32,3 +32,5 @@ User.init(
     timestamps: true,
   }
 );
+
+export default User;
