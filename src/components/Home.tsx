@@ -31,7 +31,7 @@ const Home = () => {
   };
 
   return (
-    <div className='h-full w-full overflow-hidden min-h-screen mt-[22rem] items-center justify-center'>
+    <div className='h-full w-full overflow-hidden min-h-screen mt-[13rem] items-center justify-center'>
       <Spotlight
         className="-top-40 left-0 md:left-60 md:-top-20"
         fill="white"
