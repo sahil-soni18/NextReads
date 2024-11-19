@@ -47,7 +47,7 @@ const Home = () => {
         />
       </div>
 
-      <div className="flex flex-col justify-center items-center ">
+      <div className="flex flex-col justify-center items-center -mt-12">
       <Image
       className="-mt-6"
       src="/images/Open-book.png"
