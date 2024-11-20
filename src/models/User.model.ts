@@ -1,9 +1,32 @@
-import { DataTypes, Model } from "sequelize";
+import { DataTypes, Model, Optional } from "sequelize";
 import connectToDatabase from "../lib/dbConnect";
 
 const sequelize = connectToDatabase();
 
-class User extends Model {}
+
+interface UserAttributes {
+  _id: number;
+  username: string;
+  email: string;
+  password: string;
+}
+
+
+
+// eslint-disable-next-line @typescript-eslint/no-empty-object-type
+interface UserCreationAttributes extends Optional<UserAttributes, '_id'> {}
+
+
+class User extends Model<UserAttributes, UserCreationAttributes> implements UserAttributes {
+  public _id!: number;
+  public username!: string;
+  public email!: string;
+  public password!: string;
+
+
+  public readonly createdAt!: Date;
+  public readonly updatedAt!: Date;
+}
 
 User.init(
   {

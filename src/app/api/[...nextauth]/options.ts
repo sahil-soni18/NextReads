@@ -1,9 +1,13 @@
 import { NextAuthOptions } from 'next-auth';
 import CredentialsProvider from 'next-auth/providers/credentials';
 import bcrypt from 'bcryptjs';
-import dbConnect from '@/lib/dbConnect'; // Ensure this connects to your Sequelize setup
+import dbConnect from '@/lib/dbConnect'; 
 import User from '@/models/User.model';
-import { Sequelize } from 'sequelize';
+
+type Credentials = {
+  email: string;
+  password: string;
+};
 
 export const authOptions: NextAuthOptions = {
   providers: [
@@ -14,29 +18,31 @@ export const authOptions: NextAuthOptions = {
         email: { label: 'Email', type: 'text' },
         password: { label: 'Password', type: 'password' },
       },
-      async authorize(credentials: any): Promise<any> {
+      async authorize(credentials: Credentials): Promise<any> {
         try {
-          await dbConnect(); // Ensure your database is connected
-          
-          // Find the user by email or username
+          await dbConnect();
+
           const user = await User.findOne({
             where: {
-               email: credentials.identifier 
+              email: credentials.email,
             },
           });
-          
+
           if (!user) {
-            throw new Error('No user found with this email or username');
+            throw new Error('No user found with this email');
           }
 
-          // Compare provided password with the stored hashed password
           const isPasswordCorrect = await bcrypt.compare(
             credentials.password,
             user.password
           );
-          
+
           if (isPasswordCorrect) {
-            return user;
+            return {
+              id: user._id,
+              email: user.email,
+              username: user.username,
+            };
           } else {
             throw new Error('Incorrect password');
           }
@@ -49,19 +55,21 @@ export const authOptions: NextAuthOptions = {
   callbacks: {
     async jwt({ token, user }) {
       if (user) {
-        token.id = user.id;
-        token.isVerified = user.isVerified;
-        token.isAcceptingMessages = user.isAcceptingMessages;
-        token.username = user.username;
+        token.id = user.id || null;
+        token.isVerified = user.isVerified || false;
+        token.isAcceptingMessages = user.isAcceptingMessages || false;
+        token.username = user.username || null;
       }
       return token;
     },
     async session({ session, token }) {
       if (token) {
-        session.user.id = token.id;
-        session.user.isVerified = token.isVerified;
-        session.user.isAcceptingMessages = token.isAcceptingMessages;
-        session.user.username = token.username;
+        session.user = {
+          id: token.id,
+          isVerified: token.isVerified,
+          isAcceptingMessages: token.isAcceptingMessages,
+          username: token.username,
+        };
       }
       return session;
     },
