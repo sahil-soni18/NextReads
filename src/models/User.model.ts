@@ -1,5 +1,5 @@
 import { DataTypes, Model, Optional } from "sequelize";
-import connectToDatabase from "../lib/dbConnect";
+import { connectToDatabase } from "../lib/dbConnect";
 
 const sequelize = connectToDatabase();
 

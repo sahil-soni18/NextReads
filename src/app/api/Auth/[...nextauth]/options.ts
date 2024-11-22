@@ -62,19 +62,26 @@ export const authOptions: NextAuthOptions = {
       // Attach user details to the session object
       if (token) {
         session.user = {
-          id: token.id,
-          email: token.email,
-          username: token.username,
+          id: token.id?.toString() || "", // Ensure token.id is a string
+          email: token.email || "", // Default to an empty string if undefined
+          username: typeof token.username === "string" ? token.username : "", // Ensure username is a string
         };
       }
       return session;
     },
     async jwt({ token, user }) {
+      // If a user object exists (during sign-in), set token properties
       if (user) {
         token.id = user.id;
         token.email = user.email;
         token.username = user.username;
       }
+
+      // Ensure token.username is a string, even during subsequent calls
+      if (typeof token.username !== "string") {
+        token.username = ""; // Fallback to an empty string
+      }
+
       return token;
     },
   },
