@@ -1,7 +1,7 @@
-import connectToDatabase from "@/lib/dbConnect";
-import { authOptions } from "../../Auth/[...nextauth]/options";
+import { testConnection } from "@/lib/dbConnect";
+import { authOptions } from "../../auth/[...nextauth]/options";
 import { getServerSession } from "next-auth/next";
-import { User } from "next-auth";
+// import { User } from "next-auth";
 import Book from "@/models/Books.model";
 import { NextResponse } from "next/server";
 
@@ -9,7 +9,7 @@ export async function GET(
   req: Request,
   { params }: { params: { bookName: string } }
 ) {
-  const book = params.bookName;
+  const book = await params.bookName;
 
   if (!book) {
     return NextResponse.json(
@@ -18,17 +18,23 @@ export async function GET(
     );
   }
 
-  await connectToDatabase();
+  await testConnection();
 
   const session = await getServerSession(authOptions);
-  const _user: User = session?.user;
 
-  if (!session || !_user) {
+  if (!session || !session.user) {
     return NextResponse.json(
       { success: false, message: "Not Authorised!" },
       { status: 401 }
     );
   }
+
+  // Type-safe user extraction
+  // const _user: User = {
+  //   id: session.user.id || "",
+  //   email: session.user.email || "",
+  //   name: session.user.username || "", // Add `name` if needed
+  // };
 
   try {
     const bookData = await Book.findOne({
@@ -49,7 +55,7 @@ export async function GET(
       { status: 200 }
     );
   } catch (error) {
-    console.log("Error finding book: ", error);
+    console.error("Error finding book:", error);
 
     const errorMessage =
       error instanceof Error ? error.message : "Unknown error";

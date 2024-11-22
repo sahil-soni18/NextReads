@@ -1,7 +1,7 @@
 import NextAuth from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
 import bcrypt from "bcryptjs"; // For password comparison
-import { connectToDatabase } from "@/lib/dbConnect";
+import {  testConnection } from "@/lib/dbConnect";
 import User from "@/models/User.model"; // Import your user model
 import { NextAuthOptions } from "next-auth";
 
@@ -24,21 +24,21 @@ export const authOptions: NextAuthOptions = {
           throw new Error("Invalid credentials");
         }
 
-        const { email, password } = credentials;
+        // const { email, password } = await credentials;
 
         try {
           // Connect to the database
-          await connectToDatabase();
+          await testConnection();
 
           // Find the user by email
-          const user = await User.findOne({ where: { email } });
+          const user = await User.findOne({ where: { email: credentials.email } });
 
           if (!user) {
             throw new Error("No user found with the given email");
           }
 
           // Compare the provided password with the hashed password
-          const isPasswordValid = await bcrypt.compare(password, user.password);
+          const isPasswordValid = await bcrypt.compare(credentials.password, user.password);
 
           if (!isPasswordValid) {
             throw new Error("Invalid password");
@@ -58,17 +58,6 @@ export const authOptions: NextAuthOptions = {
     }),
   ],
   callbacks: {
-    async session({ session, token }) {
-      // Attach user details to the session object
-      if (token) {
-        session.user = {
-          id: token.id?.toString() || "", // Ensure token.id is a string
-          email: token.email || "", // Default to an empty string if undefined
-          username: typeof token.username === "string" ? token.username : "", // Ensure username is a string
-        };
-      }
-      return session;
-    },
     async jwt({ token, user }) {
       // If a user object exists (during sign-in), set token properties
       if (user) {
@@ -84,13 +73,26 @@ export const authOptions: NextAuthOptions = {
 
       return token;
     },
+
+    async session({ session, token }) {
+      // Attach user details to the session object
+      if (token) {
+        session.user = {
+          id: token.id?.toString() || "", // Ensure token.id is a string
+          email: token.email || "", // Default to an empty string if undefined
+          username: typeof token.username === "string" ? token.username : "", // Ensure username is a string
+        };
+      }
+      return session;
+    },
+    
   },
   session: {
     strategy: "jwt",
   },
   secret: process.env.NEXTAUTH_SECRET,
   pages: {
-    signIn: "/sign-in",
+    signIn: "/SignIn",
   },
 };
 
