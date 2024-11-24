@@ -1,6 +1,6 @@
 
 import { Model, DataTypes, Optional } from 'sequelize';
-import connectToDatabase from "../lib/dbConnect";
+import {connectToDatabase} from "../lib/dbConnect";
 
 const sequelize = connectToDatabase();
 
@@ -9,22 +9,23 @@ interface BookAttributes {
   title: string;
   author: string;
   description?: string;
-  downloadLink?: string;
-  readLink?: string;
+  publishYear?: string;
+  pdfPath?: string;
   createdAt?: Date;
   updatedAt?: Date;
 }
 
 // eslint-disable-next-line @typescript-eslint/no-empty-object-type
-interface BookCreationAttributes extends Optional<BookAttributes, 'id' | 'description' | 'downloadLink' | 'readLink'> {}
+interface BookCreationAttributes extends Optional<BookAttributes, 'id' | 'description' | 'publishYear' | 'pdfPath' > {}
 
 class Book extends Model<BookAttributes, BookCreationAttributes> implements BookAttributes {
   public id!: number;
   public title!: string;
   public author!: string;
   public description?: string;
-  public downloadLink?: string;
-  public readLink?: string;
+  public publishYear?: string;
+  public pdfPath!: string; 
+
 
   // Timestamps
   public readonly createdAt!: Date;
@@ -50,20 +51,14 @@ Book.init(
       type: DataTypes.TEXT,
       allowNull: true,
     },
-    downloadLink: {
-      type: DataTypes.STRING(2048),
+    publishYear: {
+      type: DataTypes.STRING,
       allowNull: true,
-      validate: {
-        isUrl: true,
-      },
     },
-    readLink: {
-      type: DataTypes.STRING(2048),
-      allowNull: true,
-      validate: {
-        isUrl: true,
-      },
-    },
+    pdfPath: {
+      type: DataTypes.STRING, // Store the relative path to the PDF file
+      allowNull: false,
+  },
   },
   {
     sequelize, 
