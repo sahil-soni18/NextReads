@@ -35,7 +35,7 @@ export async function POST(req: Request) {
 
     // Save the PDF file to the /files directory
     try {
-        const filesDir = path.join(process.cwd(), "files");
+        const filesDir = path.join(process.cwd(), "files/Database");
         await fs.mkdir(filesDir, { recursive: true }); // Ensure the directory exists
 
         const fileName = `${title}-${pdfFile.name}`;

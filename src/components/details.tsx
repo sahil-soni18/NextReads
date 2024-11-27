@@ -15,7 +15,7 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 
-import { formSchema } from "../schemas/SignInSchema";
+import { formSchema } from "../schemas/DashboardSchema";
 
 export function DetailsDemo() {
   const form = useForm<z.infer<typeof formSchema>>({
@@ -23,7 +23,7 @@ export function DetailsDemo() {
     defaultValues: {
       Title: "",
       Author: "",
-      Year: "",
+      Year: 2024,
       Genre: "",
       Description: "",
     },
@@ -40,7 +40,7 @@ export function DetailsDemo() {
           {/* TITLE Field */}
           <FormField
             control={form.control}
-            name="title"
+            name="Title"
             render={({ field }) => (
               <FormItem className="flex items-center space-x-4">
                 <FormLabel className="w-[100px] text-sm">Title</FormLabel>
@@ -58,7 +58,7 @@ export function DetailsDemo() {
           {/* Author */}
           <FormField
             control={form.control}
-            name="author"
+            name="Author"
             render={({ field }) => (
               <FormItem className="flex items-center space-x-4">
                 <FormLabel className="w-[100px] text-sm">Author</FormLabel>
@@ -77,7 +77,7 @@ export function DetailsDemo() {
           {/* Year */}
           <FormField
             control={form.control}
-            name="year"
+            name="Year"
             render={({ field }) => (
               <FormItem className="flex items-center space-x-4">
                 <FormLabel className="w-[100px] text-sm">Year</FormLabel>
@@ -96,7 +96,7 @@ export function DetailsDemo() {
           {/* Genre */}
           <FormField
             control={form.control}
-            name="genre"
+            name="Genre"
             render={({ field }) => (
               <FormItem className="flex items-center space-x-4">
                 <FormLabel className="w-[100px] text-sm">Genre</FormLabel>
@@ -115,7 +115,7 @@ export function DetailsDemo() {
           {/* Description */}
           <FormField
             control={form.control}
-            name="description"
+            name="Description"
             render={({ field }) => (
               <FormItem className="flex items-center space-x-4">
                 <FormLabel className="w-[100px] text-sm">Description</FormLabel>
