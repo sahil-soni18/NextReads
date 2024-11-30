@@ -18,7 +18,10 @@ export async function GET(
     );
   }
 
-  await testConnection();
+  testConnection()
+  .then(() => console.log('Connection and sync successful'))
+  .catch((err) => console.error('Error during connection or sync:', err));
+
 
   const session = await getServerSession(authOptions);
 
@@ -43,6 +46,8 @@ export async function GET(
       },
     });
 
+    console.log(`Book found: ${bookData}..`);
+
     if (!bookData) {
       return NextResponse.json(
         { success: false, message: "Book not found" },
@@ -55,7 +60,7 @@ export async function GET(
       { status: 200 }
     );
   } catch (error) {
-    console.error("Error finding book:", error);
+    console.error("Error finding book nope:", error);
 
     const errorMessage =
       error instanceof Error ? error.message : "Unknown error";

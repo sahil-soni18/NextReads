@@ -17,33 +17,28 @@ export const connectToDatabase = (): Sequelize => {
     console.log(`Connecting to database with URI: ${dbUri}`);
 
     sequelize = new Sequelize(dbUri, {
-      dialect: "postgres", // Ensure the correct dialect is specified
+      dialect: "postgres",
       dialectModule: pg,
-      logging: false, // Optional: Disable SQL query logging
+      logging: console.log,  // Enable logging to see SQL queries in the console
     });
-
-    // (async () => {
-    //   try {
-    //     await sequelize.authenticate();
-    //     console.log("Database connection successful!");
-    //   } catch (error) {
-    //     console.error("Database connection failed:", error.message);
-    //   }
-    // })();
-
   }
 
   return sequelize;
 };
 
-// Test the connection
 export const testConnection = async () => {
   try {
     const db = connectToDatabase();
-    await db.authenticate();
+    await db.authenticate(); // Test database connection
     console.log("Database connected successfully!");
+
+    // Sync models to create tables
+    // Use force: true to drop and recreate the tables for testing
+    await db.sync({ force: true });  // Will drop tables and recreate them
+    console.log("Tables synchronized successfully!");
+
   } catch (error) {
-    console.error("Unable to connect to the database:", error.message);
+    console.error("Unable to connect to the database:", (error as Error).message);
     throw error;
   }
 };

@@ -1,19 +1,24 @@
-"use client";
+'use client';
 
 import { AnimatePresence, motion } from "framer-motion";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { cn } from "@/lib/utils";
 
+// Update the prop types to include value
 export function PlaceholdersAndVanishInput({
   placeholders,
   onChange,
   onSubmit,
+  value, // Add value to the prop types
 }: {
   placeholders: string[];
   onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
   onSubmit: (e: React.FormEvent<HTMLFormElement>) => void;
+  value: string;  // Include value prop type
 }) {
   const [currentPlaceholder, setCurrentPlaceholder] = useState(0);
+  const [inputValue, setInputValue] = useState<string>(value); // Initialize state with the `value` prop
+
 
   const intervalRef = useRef<NodeJS.Timeout | null>(null);
   const startAnimation = () => {
@@ -21,6 +26,7 @@ export function PlaceholdersAndVanishInput({
       setCurrentPlaceholder((prev) => (prev + 1) % placeholders.length);
     }, 3000);
   };
+  
   const handleVisibilityChange = () => {
     if (document.visibilityState !== "visible" && intervalRef.current) {
       clearInterval(intervalRef.current); // Clear the interval when the tab is not visible
@@ -45,7 +51,6 @@ export function PlaceholdersAndVanishInput({
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const newDataRef = useRef<any[]>([]);
   const inputRef = useRef<HTMLInputElement>(null);
-  const [value, setValue] = useState("");
   const [animating, setAnimating] = useState(false);
 
   const draw = useCallback(() => {
@@ -141,7 +146,7 @@ export function PlaceholdersAndVanishInput({
         if (newDataRef.current.length > 0) {
           animateFrame(pos - 8);
         } else {
-          setValue("");
+          setInputValue("");
           setAnimating(false);
         }
       });
@@ -158,8 +163,8 @@ export function PlaceholdersAndVanishInput({
   const vanishAndSubmit = () => {
     setAnimating(true);
     draw();
-
-    const value = inputRef.current?.value || "";
+  
+    const value = inputValue || ""; // Use local state here
     if (value && inputRef.current) {
       const maxX = newDataRef.current.reduce(
         (prev, current) => (current.x > prev ? current.x : prev),
@@ -168,12 +173,14 @@ export function PlaceholdersAndVanishInput({
       animate(maxX);
     }
   };
+  
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     vanishAndSubmit();
     onSubmit && onSubmit(e);
   };
+  
   return (
     <form
       className={cn(
@@ -192,13 +199,13 @@ export function PlaceholdersAndVanishInput({
       <input
         onChange={(e) => {
           if (!animating) {
-            setValue(e.target.value);
+            setInputValue(e.target.value);
             onChange && onChange(e);
           }
         }}
         onKeyDown={handleKeyDown}
         ref={inputRef}
-        value={value}
+        value={value}  // Bind the value prop
         type="text"
         className={cn(
           "w-full relative text-sm sm:text-base z-50 border-none dark:text-white bg-transparent text-black h-full rounded-full focus:outline-none focus:ring-0 pl-4 sm:pl-10 pr-20",
@@ -274,3 +281,5 @@ export function PlaceholdersAndVanishInput({
     </form>
   );
 }
+
+

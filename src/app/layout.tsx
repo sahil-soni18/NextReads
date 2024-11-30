@@ -1,9 +1,13 @@
+// 'use client'
+
 import type { Metadata } from "next";
 import localFont from "next/font/local";
 import "./globals.css";
 import { NavbarDemo } from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import AuthProvider from "./context/AuthProvider";
+import { useEffect } from "react";
+import { testConnection } from "@/lib/dbConnect";
 
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
@@ -27,6 +31,15 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  useEffect(() => {
+    // Test the database connection when the app initializes
+    testConnection()
+      .then(() => console.log("Database connected successfully"))
+      .catch((error) => {
+        console.error("Error during DB connection:", error.message);
+        process.exit(1); // Optional: terminate if connection fails
+      });
+  }, []);
   return (
     <html lang="en">
     <AuthProvider>

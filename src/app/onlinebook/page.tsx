@@ -1,70 +1,88 @@
-// import React from 'react'
+'use client';
 
-// type Props = {}
+import { CardDemo } from "@/components/Card";
+import React, { useEffect, useState } from "react";
+import { useSearchParams } from "next/navigation"; // Correct hook for query parameters
 
-// const page = (props: Props) => {
-//   return (
-//     <div>page</div>
-//   )
-// }
+interface Book {
+  id: number;
+  title: string;
+  author: string;
+  description?: string;
+  publishYear?: string;
+  pdfPath: string; // Assuming this will be included for download
+}
 
-// export default page
+const Page = () => {
+  const searchParams = useSearchParams(); // Hook to get query parameters
+  const query = searchParams.get("query"); // Access the 'query' parameter
+  const [books, setBooks] = useState<Book[]>([]);
 
-import Image from "next/image";
+  useEffect(() => {
+    if (query) {
+      const fetchBooks = async () => {
+        try {
+          const response = await fetch(`/api/searchBook/${encodeURIComponent(query)}`);
+          if (response.status === 200) {
+            const data = await response.json();
+            setBooks(data.data); // Assuming the returned data is in { data: [] } format
+          } else {
+            console.error("Error fetching books:", response.statusText);
+          }
+        } catch (err) {
+          console.error("Error fetching books:", err);
+        }
+      };
 
-const books = [
-  {
-    id: 1,
-    title: "The Great Gatsby",
-    author: "F. Scott Fitzgerald",
-    image: "/images/great-gatsby.jpg",
-    price: "$10",
-  },
-  {
-    id: 2,
-    title: "1984",
-    author: "George Orwell",
-    image: "/images/1984.jpg",
-    price: "$15",
-  },
-  {
-    id: 3,
-    title: "To Kill a Mockingbird",
-    author: "Harper Lee",
-    // image: "https://unsplash.com/photos/open-book-lot-Oaqk7qqNh_c",
-    image: "https://images.unsplash.com/photo-1522092787789-95b08ec82c3d",
+      fetchBooks();
+    }
+  }, [query]);
 
-    price: "$12",
-  },
-];
-
-export default function AllBooks() {
   return (
-    <div className="min-h-screen bg-black-100 p-8">
-      <h1 className="text-3xl font-bold text-white text-center mb-6 mt-20">All Books</h1>
+    <div className="min-h-screen bg-gray-900 text-white">
+      <div className="container mx-auto py-12 px-6 grid grid-cols-1 md:grid-cols-2 gap-8">
+        {/* Book Card */}
+        <div className="flex justify-center md:justify-start">
+          {books.length > 0 ? (
+            <CardDemo book={books[0]} />
+          ) : (
+            <p>Loading book details...</p>
+          )}
+        </div>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-        {books.map((book) => (
-          <div
-            key={book.id}
-            className="bg-gray-900 rounded-lg shadow-md p-4 hover:shadow-lg transition-shadow"
-          >
-            <Image
-              src={book.image}
-              alt={book.title}
-              width={150}
-              height={200}
-              className="rounded-md object-cover mx-auto mb-4"
-            />
-            <h2 className="text-lg font-bold mb-2">{book.title}</h2>
-            <p className="text-white-700 mb-2">By {book.author}</p>
-            <p className="text-white-800 font-semibold">{book.price}</p>
-            <button className="mt-4 px-4 py-2 bg-white text-black rounded transform transition-transform hover:scale-110 hover:bg-gray-600">
-              View Details
-            </button>
-          </div>
-        ))}
+        {/* Book Details */}
+        <div className="flex flex-col justify-center space-y-4">
+          {books.length > 0 ? (
+            <>
+              <h2 className="text-3xl font-bold">{books[0].title}</h2>
+              <p className="text-lg text-gray-300">
+                <span className="font-semibold">Author:</span> {books[0].author}
+              </p>
+              <p className="text-lg text-gray-300">
+                <span className="font-semibold">Summary:</span> {books[0].description || 'No description available'}
+              </p>
+              {books[0].publishYear && (
+                <p className="text-lg text-gray-300">
+                  <span className="font-semibold">Published:</span> {books[0].publishYear}
+                </p>
+              )}
+              <a
+                href={books[0].pdfPath} // Assuming the pdfPath points to the downloadable file
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                <button className="shadow-[inset_0_0_0_2px_#616467] text-black px-12 py-4 rounded-full tracking-widest uppercase font-bold bg-transparent hover:bg-[#616467] hover:text-white dark:text-neutral-200 transition duration-200">
+                  Download
+                </button>
+              </a>
+            </>
+          ) : (
+            <p>No book found for the query: {query}</p>
+          )}
+        </div>
       </div>
     </div>
   );
-}
+};
+
+export default Page;
